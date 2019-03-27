@@ -4,6 +4,22 @@ const { Buffer } = require('safe-buffer');
 const ecdsa = jwa('ES256');
 
 /**
+ * @typedef TokenParts
+ * @property {String} payload
+ * @property {String} signature
+ */
+
+/**
+ * Splits a token to its payload and signature parts
+ * @param {String} token
+ * @return {TokenParts}
+ */
+const extractParts = token => (input => ({
+  payload: input.substr(86),
+  signature: input.substr(0, 86)
+}))(String(token));
+
+/**
  * @param {String} token
  * @param {String} publicKey
  * @return {Object}
@@ -11,10 +27,7 @@ const ecdsa = jwa('ES256');
 const tokenParser = (token, publicKey) => {
   const userData = {};
   try {
-    assert(typeof token === 'string');
-
-    const signature = token.substr(0, 86);
-    const payload = token.substr(86);
+    const { payload, signature } = extractParts(token);
 
     assert(ecdsa.verify(payload, signature, publicKey));
 
@@ -60,6 +73,7 @@ const tokenData = (publicKey, headerName = 'Token') => {
 };
 
 module.exports = {
+  extractParts,
   parser,
   tokenData
 };
