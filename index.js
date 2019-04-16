@@ -81,7 +81,8 @@ const sign = (data, privateKey) => {
  * @param {String} headerName
  */
 const middleware = (req, res, next, tokenParser, headerName) => {
-  req.tokenData = tokenParser(req.get(headerName));
+  req.token = req.get(headerName);
+  req.tokenData = tokenParser(req.token);
   next();
 };
 
