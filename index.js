@@ -64,13 +64,13 @@ const parser = publicKey => {
 
 /**
  * Generates a token from a payload
- * @param {*} payload
+ * @param {*} data
  * @param {String|Buffer} privateKey
  * @return {String}
  */
-const sign = (payload, privateKey) => {
+const sign = (data, privateKey) => {
   privateKey = parseKey(privateKey);
-  const json = JSON.stringify(payload);
+  const json = JSON.stringify(data);
   const payload = Buffer.from(json).toString('base64');
   const signature = ecdsa.sign(payload, privateKey);
   return `${signature}${payload}`;
