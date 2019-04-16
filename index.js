@@ -10,6 +10,18 @@ const ecdsa = jwa('ES256');
  */
 
 /**
+ * Parses a public or private ECDSA key from a file or string
+ * @param {String|Buffer} key
+ * @return {String}
+ */
+const parseKey = (key) => {
+  if (Buffer.isBuffer(key)) {
+    key = key.toString();
+  }
+  return key;
+};
+
+/**
  * Splits a token to its payload and signature parts
  * @param {String} token
  * @return {TokenParts}
@@ -44,12 +56,24 @@ const tokenParser = (token, publicKey) => {
  * @return {Function} Token parser function
  */
 const parser = publicKey => {
-  if (Buffer.isBuffer(publicKey)) {
-    publicKey = publicKey.toString();
-  }
+  publicKey = parseKey(publicKey);
   assert(typeof publicKey === 'string', 'A valid public key must be supplied in order to verify incoming tokens');
 
   return token => tokenParser(token, publicKey);
+};
+
+/**
+ * Generates a token from a payload
+ * @param {*} payload
+ * @param {String|Buffer} privateKey
+ * @return {String}
+ */
+const sign = (payload, privateKey) => {
+  privateKey = parseKey(privateKey);
+  const json = JSON.stringify(payload);
+  const payload = Buffer.from(json).toString('base64');
+  const signature = ecdsa.sign(payload, privateKey);
+  return `${signature}${payload}`;
 };
 
 /**
@@ -75,5 +99,6 @@ const tokenData = (publicKey, headerName = 'Token') => {
 module.exports = {
   extractParts,
   parser,
+  sign,
   tokenData
 };

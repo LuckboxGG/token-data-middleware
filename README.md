@@ -64,6 +64,16 @@ Name       | Type            | Default | Description
 publicKey  | `String|Buffer` |         | PEM-formatted public key
 headerName | `String`        | "Token" | An optional name for the header from which to extract the token data
 
+#### `sign(payload, privateKey) : Object`
+
+Signs a payload and generates a token provided an ECDSA private key.
+
+Name       | Type     | Description
+-----------|----------|------------
+payload    | any      | Payload to sign
+privateKey | `String` | PEM-formatted private key
+
+
 #### `tokenParser(token) : Object`
 
 Parses a signed token and returns the data contained within. In case the token is invalid, an empty object is returned.
