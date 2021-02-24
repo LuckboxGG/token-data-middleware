@@ -16,7 +16,11 @@
     "url": "https://github.com/LuckboxGG/token-data-middleware/issues"
   },
   "homepage": "https://github.com/LuckboxGG/token-data-middleware#readme",
+  "devDependencies": {
+    "@types/node": ">=5.10.0"
+  },
   "dependencies": {
     "jwa": "^1.4.1"
-  }
+  },
+  "types": "types.d.ts"
 }
