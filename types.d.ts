@@ -14,6 +14,11 @@ declare module '@luckbox/token-data-middleware' {
    */
   export function parser(publicKey: string | Buffer): TokenParser;
 
+  /**
+   * Initializes a new async token parser
+   * @param {String|Buffer} publicKey PEM-formatted public key
+   * @return {AsyncTokenParser} Token parser function
+   */
   export function asyncParser(publicKey: string | Buffer): AsyncTokenParser;
 
 

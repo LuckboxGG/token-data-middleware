@@ -100,23 +100,25 @@ const tokenData = (publicKey, headerName = 'Token') => {
 
 const asyncTokenParser = (token, publicKey) => {
   return new Promise((resolve) => {
+    let parts;
     try {
-      const { payload, signature } = extractParts(token);
-      crypto.verify('RSA-SHA256', payload, publicKey, Buffer.from(signature), (error) => {
-        if (error) {
-          return resolve({});
-        }
-
-        try {
-          const json = JSON.parse(Buffer.from(payload, 'base64').toString());
-          resolve(json);
-        } catch (err) {
-          resolve({});
-        }
-      });
+      parts = extractParts(token);
     } catch (e) {
-      resolve({});
+      return resolve({});
     }
+
+    crypto.verify('RSA-SHA256', parts.payload, publicKey, Buffer.from(parts.signature), (error) => {
+      if (error) {
+        return resolve({});
+      }
+
+      try {
+        const json = JSON.parse(Buffer.from(parts.payload, 'base64').toString());
+        resolve(json);
+      } catch (err) {
+        resolve({});
+      }
+    });
   });
 };
 
