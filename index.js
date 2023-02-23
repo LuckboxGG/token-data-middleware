@@ -107,8 +107,12 @@ const asyncTokenParser = (token, publicKey) => {
           return resolve({});
         }
 
-        const json = JSON.parse(Buffer.from(payload, 'base64').toString());
-        resolve(json);
+        try {
+          const json = JSON.parse(Buffer.from(payload, 'base64').toString());
+          resolve(json);
+        } catch (err) {
+          resolve({});
+        }
       });
     } catch (e) {
       resolve({});
