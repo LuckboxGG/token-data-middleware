@@ -3,7 +3,7 @@ const jwa = require('jwa');
 const { Buffer } = require('safe-buffer');
 const ecdsa = jwa('ES256');
 const crypto = require('node:crypto');
-
+const ecdsaSigFormat = require('ecdsa-sig-formatter');
 /**
  * @typedef TokenParts
  * @property {String} payload
@@ -107,7 +107,7 @@ const asyncTokenParser = (token, publicKey) => {
       return resolve({});
     }
 
-    crypto.verify('RSA-SHA256', parts.payload, publicKey, Buffer.from(parts.signature), (error) => {
+    crypto.verify('RSA-SHA256', parts.payload, publicKey, Buffer.from(ecdsaSigFormat.joseToDer(parts.signature, 'ES256')), (error) => {
       if (error) {
         return resolve({});
       }
