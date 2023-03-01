@@ -100,12 +100,7 @@ const tokenData = (publicKey, headerName = 'Token') => {
 
 const asyncTokenParser = (token, publicKey) => {
   return new Promise((resolve) => {
-    let parts;
-    try {
-      parts = extractParts(token);
-    } catch (e) {
-      return resolve({});
-    }
+    const parts = extractParts(token);
 
     crypto.verify('RSA-SHA256', parts.payload, publicKey, Buffer.from(ecdsaSigFormat.joseToDer(parts.signature, 'ES256')), (error, result) => {
       if (error || !result) {
