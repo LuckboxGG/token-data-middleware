@@ -102,7 +102,14 @@ const asyncTokenParser = (token, publicKey) => {
   return new Promise((resolve) => {
     const parts = extractParts(token);
 
-    crypto.verify('RSA-SHA256', parts.payload, publicKey, Buffer.from(ecdsaSigFormat.joseToDer(parts.signature, 'ES256')), (error, result) => {
+    let derSignature;
+    try {
+      derSignature = ecdsaSigFormat.joseToDer(parts.signature, 'ES256');
+    } catch (err) {
+      return resolve({});
+    }
+
+    crypto.verify('RSA-SHA256', parts.payload, publicKey, Buffer.from(derSignature), (error, result) => {
       if (error || !result) {
         return resolve({});
       }
