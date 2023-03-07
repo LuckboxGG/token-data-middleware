@@ -2,7 +2,8 @@ const assert = require('assert');
 const jwa = require('jwa');
 const { Buffer } = require('safe-buffer');
 const ecdsa = jwa('ES256');
-
+const crypto = require('node:crypto');
+const ecdsaSigFormat = require('ecdsa-sig-formatter');
 /**
  * @typedef TokenParts
  * @property {String} payload
@@ -97,9 +98,39 @@ const tokenData = (publicKey, headerName = 'Token') => {
   return (req, res, next) => middleware(req, res, next, tokenParser, headerName);
 };
 
+const asyncTokenParser = (token, publicKey) => {
+  return new Promise((resolve) => {
+    const parts = extractParts(token);
+
+    crypto.verify('RSA-SHA256', parts.payload, publicKey, Buffer.from(ecdsaSigFormat.joseToDer(parts.signature, 'ES256')), (error, result) => {
+      if (error || !result) {
+        return resolve({});
+      }
+
+      try {
+        const json = JSON.parse(Buffer.from(parts.payload, 'base64').toString());
+        resolve(json);
+      } catch (err) {
+        resolve({});
+      }
+    });
+  });
+};
+
+const asyncParser = publicKey => {
+  publicKey = parseKey(publicKey);
+  assert(typeof publicKey === 'string', 'A valid public key must be supplied in order to verify incoming tokens');
+
+  return token => asyncTokenParser(token, publicKey);
+};
+
+
 module.exports = {
   extractParts,
   parser,
   sign,
-  tokenData
+  tokenData,
+
+  asyncParser,
+  asyncTokenParser,
 };

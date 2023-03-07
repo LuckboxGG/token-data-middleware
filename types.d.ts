@@ -5,6 +5,7 @@ declare module '@luckbox/token-data-middleware' {
   };
 
   export type TokenParser = (token: string) => Record<string, unknown>;
+  export type AsyncTokenParser = (token: string) => Promise<Record<string, unknown>>;
 
   /**
    * Initializes a new token parser
@@ -12,6 +13,14 @@ declare module '@luckbox/token-data-middleware' {
    * @return {TokenParser} Token parser function
    */
   export function parser(publicKey: string | Buffer): TokenParser;
+
+  /**
+   * Initializes a new async token parser
+   * @param {String|Buffer} publicKey PEM-formatted public key
+   * @return {AsyncTokenParser} Token parser function
+   */
+  export function asyncParser(publicKey: string | Buffer): AsyncTokenParser;
+
 
   /**
    * Splits a token to its payload and signature parts

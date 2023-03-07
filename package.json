@@ -1,6 +1,6 @@
 {
   "name": "@luckbox/token-data-middleware",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Validates and extracts data from signed tokens",
   "main": "index.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "@types/node": ">=5.10.0"
   },
   "dependencies": {
+    "ecdsa-sig-formatter": "^1.0.11",
     "jwa": "^1.4.1"
   },
   "types": "types.d.ts"
